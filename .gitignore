@@ -1,0 +1,4 @@
+target/
+fashionMnist/
+mnist/
+.bsp/
