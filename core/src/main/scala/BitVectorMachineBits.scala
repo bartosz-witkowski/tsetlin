@@ -364,58 +364,24 @@ final class BitVectorMachineBits(
     applyFeedbackToClauses(ws.clauseOutputNegative, negativeClassClauses(cls), ws.negativeFeedback, x, random)
   }
 
-  def traceDump(): String = (
-    s"pos: sync($tSync1) ws($tWs1) class-output($tClassOutput1) gen-feedback($tGenerateClassFeedback1) apply($tApplyFeedback1)\n" +
-    s"neg: sync($tSync2) ws($tWs2) class-output($tClassOutput2) gen-feedback($tGenerateClassFeedback2) apply($tApplyFeedback2) rand($tPaired)\n"
-  )
-
-  var tSync1 = 0L
-  var tWs1 = 0L
-  var tClassOutput1 = 0L
-  var tGenerateClassFeedback1 = 0L
-  var tApplyFeedback1 = 0L
-
-  var tPaired = 0L
-
-  var tSync2 = 0L
-  var tWs2 = 0L
-  var tClassOutput2 = 0L
-  var tGenerateClassFeedback2 = 0L
-  var tApplyFeedback2 = 0L
-
-    
   def update(x: BitVector, y: Int, random: Random): Unit = {
     val targetClass = y
 
-    var t6 = 0L
-
-    val t0 = System.currentTimeMillis
     positiveClassClauses(targetClass).synchronized {
-      val t1 = System.currentTimeMillis
       val ws = workspaces(targetClass)
-      val t2 = System.currentTimeMillis
       classOutput(targetClass, x, predict = false, ws)
-      val t3 = System.currentTimeMillis
 
       generateClassFeedback(
         isTargetClass = true, 
         ClassOutput.sumUpClauseVotes(ws.clauseOutputPositive, ws.clauseOutputNegative),
         random,
         ws)
-      val t5 = System.currentTimeMillis
 
       applyFeedback(
         targetClass, 
         x,
         random,
         ws)
-
-      t6 = System.currentTimeMillis
-      tSync1 += t1 - t0
-      tWs1 += t2 - t1
-      tClassOutput1 += t3 - t2
-      tGenerateClassFeedback1 += t5 - t3
-      tApplyFeedback1 += t6 - t5
     }
 
     val pairedClass: Int = {
@@ -437,35 +403,22 @@ final class BitVectorMachineBits(
        */
       (1 + random.nextInt(nClasses - 1) + y) % nClasses
     }
-    val t7 = System.currentTimeMillis
 
     positiveClassClauses(pairedClass).synchronized {
-      val t8 = System.currentTimeMillis
       val ws = workspaces(pairedClass)
-      val t9 = System.currentTimeMillis
       classOutput(pairedClass, x, predict = false, ws)
-      val t10 = System.currentTimeMillis
 
       generateClassFeedback(
         isTargetClass = false, 
         ClassOutput.sumUpClauseVotes(ws.clauseOutputPositive, ws.clauseOutputNegative), 
         random,
         ws)
-      val t11 = System.currentTimeMillis
 
       applyFeedback(
         pairedClass, 
         x,
         random,
         ws)
-      val t12 = System.currentTimeMillis
-
-      tPaired = t7 - t6
-      tSync2 += t8 - t7
-      tWs2 += t9 - t8
-      tClassOutput2 += t10 - t9
-      tGenerateClassFeedback2 += t11 - t10
-      tApplyFeedback2 += t12 - t11
     }
   }
 
