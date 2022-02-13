@@ -138,7 +138,6 @@ final class BitVectorMachineBits(
     val negated = team.negated
 
     val xs = x.underlying
-    val len = IntVectorSpecies.length
 
     while (i < bound) {
       val whichBits = IntVector.fromArray(IntVectorSpecies, xs, i)
@@ -159,7 +158,7 @@ final class BitVectorMachineBits(
       normal.decBitsVec(i, stream1overS.sampleVec(random).and(whichBits.not))
       // }---
       
-      i += len
+      i += IntVectorSpecies.length
     }
 
     while (i < size) {
@@ -255,12 +254,11 @@ final class BitVectorMachineBits(
     val negated = team.negated
 
     val bound = IntVectorSpecies.loopBound(nInts)
-    val len = IntVectorSpecies.length
 
     while (i < bound) {
       normal.decBitsVec(i, stream1overS.sampleVec(random))
       negated.decBitsVec(i, stream1overS.sampleVec(random))
-      i += len
+      i += IntVectorSpecies.length
     }
 
     while (i < nInts) {
@@ -281,7 +279,6 @@ final class BitVectorMachineBits(
 
     val normal = team.normal
     val negated = team.negated
-    val len = IntVectorSpecies.length
 
     while (i < bound) {
       val xvec = IntVector.fromArray(IntVectorSpecies, xs, i)
@@ -296,7 +293,7 @@ final class BitVectorMachineBits(
         normal.incBitsVec(i, whichBits)
       }
 
-      i += len
+      i += IntVectorSpecies.length
     }
 
     while (i < nInts) {
