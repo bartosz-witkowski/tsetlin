@@ -47,8 +47,8 @@ object Main {
 
     val random = new ThreadSafeRandom 
 
-    val machine = SimpleMutableMachine.from(description, random)
-    //val machine = BitVectorMachineBits.initial(description)
+    //val machine = SimpleMutableMachine.from(description, random)
+    val machine = BitVectorMachineBits.initial(description)
 
     import java.io._
 
